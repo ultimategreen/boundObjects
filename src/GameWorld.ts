@@ -26,20 +26,59 @@ export class GameWorld
             throw "null context";
         }
         this.context = maybeCanvasRenderingContext2D;
-        this.gameObjects = [
-            new Square(this.context, 301, 600, 50, 50, 10, true),
-            new Square(this.context, 352, 600, 50, 50, 10, true),
-            new Square(this.context, 340, 300, 20, 20, 10, false, 0, 10),
-        ];
         this.secondsPassed = 0;
         this.oldTimeStamp = 0;
 
+        this.gameObjects = [
+            new Circle(this.context, 300, 300, 10, 20, false, 0, 3),
+            new Square(this.context, 301, 400, 200, 50, 10, true),
+            new Square(this.context, 600, 600, 50, 500, 10, true),
+
+            new Square(this.context, 0, 100, 500, 10, 10, true),
+        ];
         this.gameObjects.forEach((obj) => obj.update());
         this.collisionEngine = new CollisionEngine(this.gameObjects);
 
         this.gameObjects.forEach((obj) => obj.update());
         // Request an animation frame for the first time
         // The gameLoop() function will be called as a callback of this request
+        //
+        document.addEventListener("keydown", (e) => {
+            console.log("key down", e.key);
+            const act = {
+                ArrowRight: () => { this.gameObjects[0].vx = 10; },
+                ArrowLeft: () => { this.gameObjects[0].vx = -10; }
+            };
+
+            switch (e.key)
+            {
+            case "ArrowRight":
+                act[e.key]();
+                break;
+            case "ArrowLeft":
+                act[e.key]();
+                break;
+            }
+
+        });
+        document.addEventListener("keyup", (e) => {
+            console.log("key up", e.key);
+            const act = {
+                ArrowRight: () => { this.gameObjects[0].vx -= 10; },
+                ArrowLeft: () => { this.gameObjects[0].vx += 10; }
+            };
+
+            switch (e.key)
+            {
+            case "ArrowRight":
+                act[e.key]();
+                break;
+            case "ArrowLeft":
+                act[e.key]();
+                break;
+            }
+
+        });
 
     }
 
@@ -62,7 +101,7 @@ export class GameWorld
         window.requestAnimationFrame(this.gameLoop);
     };
 
-    clearCanvas() 
+    clearCanvas()
     {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }

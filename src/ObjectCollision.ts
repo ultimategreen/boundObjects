@@ -12,20 +12,16 @@ export function rectIntersect(obj1: Square, obj2: Square, data:CollisionObjects)
         square(obj1.x - obj2.x) + square(obj1.y - obj2.y)
     );
     data.vCollision = {
-        x:
-            obj1.x + obj1.width / 2 - (obj2.x + obj2.width / 2),
-        y:
-            obj1.y +
-            obj1.height / 2 -
-            (obj2.y + obj2.height / 2),
+        x: (obj1.x + obj1.width / 2) - (obj2.x + obj2.width / 2),
+        y: (obj1.y + obj1.height / 2) - (obj2.y + obj2.height / 2),
     };
 
     // Check x and y for overlap
     if (
         obj2.x > obj1.width + obj1.x ||
-    obj1.x > obj2.width + obj2.x ||
-obj2.y > obj1.height + obj1.y ||
-obj1.y > obj2.height + obj2.y
+        obj1.x > obj2.width + obj2.x ||
+        obj2.y > obj1.height + obj1.y ||
+        obj1.y > obj2.height + obj2.y
     )
     {
         return false;
@@ -84,36 +80,70 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
         x: Math.abs(circle.x - (squre.x + squre.width / 2)),
         y: Math.abs(circle.y - (squre.y + squre.height / 2)),
     };
+    data.vCollisionSlope = data.vCollision.y / data.vCollision.x;
     data.distance = Math.sqrt(
         square(data.vCollision.x - squre.width / 2) +
             square(data.vCollision.y - squre.height / 2)
     );
+    data.slopeThreshold = {
+        horizontal : (squre.height + circle.r) / squre.width,
+        vertical : squre.height / (circle.r + squre.width)
+    };
 
-    if (data.vCollision.x > squre.width / 2 + circle.r) 
+    if (data.vCollision.x > squre.width / 2 + circle.r)
     {
         return false;
     }
-    if (data.vCollision.y > squre.height / 2 + circle.r) 
+    if (data.vCollision.y > squre.height / 2 + circle.r)
     {
         return false;
     }
 
-    if (data.vCollision.y <= squre.height / 2 + circle.r) 
+    // vertex
+    if (data.slopeThreshold.horizontal < data.vCollisionSlope && data.vCollisionSlope < data.slopeThreshold.vertical && data.distance < circle.r)
     {
-        if (circle.fixed === false) 
+        data.dir = "vertex";
+        return true;
+    }
+
+    //horizontal side
+    if (data.slopeThreshold.horizontal >= data.vCollisionSlope && data.vCollision.y < squre.height + circle.r)
+    {
+        if (squre.fixed === false && squre.x < circle.x && circle.x < squre.x + squre.width)
         {
-            circle.y = squre.y - circle.r;
+            squre.x = circle.x - circle.r - squre.width;
         }
-        if (squre.fixed === false) 
+        if (circle.fixed === false)
+        {
+            if (circle.x < squre.x + squre.width && squre.x < circle.x + circle.r)
+            // right side
+            {
+                circle.x = squre.x + squre.width + circle.r;
+            }
+            else if (circle.x < squre.x && squre.x < circle.x + circle.r)
+            // left side
+            {
+                circle.x = squre.x - circle.r;
+            }
+        }
+        data.dir = "horizontal";
+        return true;
+    }
+
+    // vertical side
+    if (data.vCollisionSlope >= data.slopeThreshold.vertical && data.vCollision.x < squre.width + circle.r)
+    {
+        if (squre.fixed === false && squre.y < circle.y && circle.y < squre.y + squre.height)
         {
             squre.y = circle.y - circle.r - squre.height;
         }
+        if (circle.fixed === false && circle.y < squre.y && squre.y < circle.y + circle.r)
+        {
+            circle.y = squre.y - circle.r;
+        }
+        data.dir = "vertical";
         return true;
     }
 
-    if (data.distance <= circle.r) 
-    {
-        return true;
-    }
     return false;
 }

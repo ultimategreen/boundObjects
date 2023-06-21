@@ -2,7 +2,6 @@ import { GameObject } from "./GameObject";
 import { Square, Circle } from "./Square";
 import { rectIntersect, circleIntersect, intersects } from "./ObjectCollision";
 
-
 export class CollisionObjects
 {
     obj1: GameObject;
@@ -12,7 +11,13 @@ export class CollisionObjects
         x: number,
         y: number
     };
+    vCollisionSlope: number;
     distance: number;
+    slopeThreshold : {
+        horizontal : number,
+        vertical : number
+    };
+    dir : "vertical" | "horizontal" | "vertex" | undefined;
 
     constructor(obj1: GameObject, obj2: GameObject)
     {
@@ -23,6 +28,12 @@ export class CollisionObjects
             y: 0
         };
         this.distance = 0;
+        this.slopeThreshold = {
+            horizontal: 0,
+            vertical: 0
+        };
+        this.vCollisionSlope = 0;
+        this.dir = undefined;
     }
 
     handleCollision()
@@ -47,7 +58,6 @@ export class CollisionObjects
         }
         return false;
     }
-
 }
 
 export class CollisionEngine 
@@ -64,28 +74,28 @@ export class CollisionEngine
         const canvasWidth = 1000;
         const canvasHeight = 1000;
 
-        const restitution = 0.9;
+        const restitution = 1.0;
         for (const obj of this.gameObjects) 
         {
             obj.isColliding = false;
 
             // Check for left and right
-            if (obj.x < obj.width) 
+            if (obj.x < 0)
             {
                 obj.vx = Math.abs(obj.vx) * restitution;
-                obj.x = obj.width;
+                obj.x = 0;
             }
-            else if (obj.x > canvasWidth - obj.width) 
+            else if (obj.x > canvasWidth - obj.width)
             {
                 obj.vx = -Math.abs(obj.vx) * restitution;
                 obj.x = canvasWidth - obj.width;
             }
 
             // Check for bottom and top
-            if (obj.y < obj.height) 
+            if (obj.y < 0)
             {
                 obj.vy = Math.abs(obj.vy) * restitution;
-                obj.y = obj.height;
+                obj.y = 0;
             }
             else if (obj.y > canvasHeight - obj.height) 
             {
@@ -122,25 +132,45 @@ export class CollisionEngine
         const vRelativeVelocity = data.obj1.vy - data.obj2.vy;
         const speed = vRelativeVelocity * vCollisionNorm;
 
-        data.obj2.vy = -(data.obj2.vy) * data.obj2.restitution;
-        data.obj1.vy = -(data.obj1.vy) * data.obj1.restitution;
+        if (data.dir === "horizontal")
+        {
+            if (data.obj1.vx * data.obj2.vx <= 0)
+            {
+                data.obj2.vx = -1 * data.obj2.vx * data.obj2.restitution;
+                data.obj1.vx = -1 * data.obj1.vx * data.obj1.restitution;
+            }
+            else if (data.obj1.vx * data.obj2.vx > 0)
+            {
+                const tempVx = data.obj2.vx;
+                data.obj2.vx = data.obj1.vx;
+                data.obj1.vx = tempVx;
+            }
+        }
+
+        if (data.dir === "vertical")
+        {
+            if (data.obj1.vy * data.obj2.vy <= 0)
+            {
+                data.obj2.vy = -1 * data.obj2.vy * data.obj2.restitution;
+                data.obj1.vy = -1 * data.obj1.vy * data.obj1.restitution;
+            }
+            else if (data.obj1.vy * data.obj2.vy > 0)
+            {
+                const tempVy = data.obj2.vy;
+                data.obj2.vy = data.obj1.vy;
+                data.obj1.vy = tempVy;
+            }
+        }
+
         console.log("speed", speed);
-        if (speed < 0) 
+
+        if (speed < 0)
         {
             return true;
         }
 
-        const impulse = (2 * speed) / (data.obj1.mass + data.obj2.mass);
-        data.obj1.vy -= impulse * data.obj2.mass * vCollisionNorm;
-        data.obj2.vy += impulse * data.obj1.mass * vCollisionNorm;
-
-        if (Math.abs(data.obj1.vy) > 100 )
-        {
-            data.obj1.vy = data.obj1.vy > 0 ? 100 : -100;
-        }
-        if (Math.abs(data.obj2.vy) > 100 )
-        {
-            data.obj2.vy = data.obj2.vy > 0 ? 100 : -100;
-        }
+        // const impulse = (2 * speed) / (data.obj1.mass + data.obj2.mass);
+        // data.obj1.vy -= impulse * data.obj2.mass * vCollisionNorm;
+        // data.obj2.vy += impulse * data.obj1.mass * vCollisionNorm;
     }
 }

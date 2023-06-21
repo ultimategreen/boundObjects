@@ -5,18 +5,6 @@ export class Square extends GameObject
     constructor(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, mass: number, fixed: boolean, vx = 0,  vy = 100, restitution = 0.9) 
     {
         super(context, x, y, vx, vy, mass, fixed, restitution, width, height);
-
-        this.fixed = fixed;
-        this.vx = vx;
-        this.restitution = restitution;
-        if (fixed === true) 
-        {
-            this.vy = 0;
-        }
-        else 
-        {
-            this.vy = vy;
-        }
     }
 
     draw() 
@@ -52,11 +40,9 @@ export class Circle extends GameObject
         super(context, x, y, vx, vy, mass, fixed, 1.0, r, r);
 
         this.r = r;
-        this.vx = vx;
-        this.vy = vy;
     }
 
-    draw() 
+    draw()
     {
         this.context.fillStyle = this.isColliding ? "#ff8080" : "#0099b0";
         this.context.beginPath();
@@ -73,10 +59,12 @@ export class Circle extends GameObject
             this.vy += g;
 
             // Move with set velocity
+            this.x += this.vx;
             this.y += this.vy;
         }
         else 
         {
+            this.vy = 0;
             this.vy = 0;
         }
     }

@@ -17,14 +17,23 @@ export abstract class GameObject
         this.context = context;
         this.x = x;
         this.y = y;
-        this.vx = vx;
-        this.vy = vy;
         this.mass = mass;
         this.width = width;
         this.height = height;
         this.restitution = restitution;
         this.fixed = fixed;
         this.isColliding = false;
+
+        if (fixed === true) 
+        {
+            this.vy = 0;
+            this.vx = 0;
+        }
+        else
+        {
+            this.vx = vx;
+            this.vy = vy;
+        }
     }
 
     abstract update(): void;
