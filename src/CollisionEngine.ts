@@ -97,10 +97,11 @@ export class CollisionEngine
                 obj.vy = Math.abs(obj.vy) * restitution;
                 obj.y = 0;
             }
-            else if (obj.y > canvasHeight - obj.height) 
+            else if (obj.y > canvasHeight - obj.height)
             {
                 obj.vy = -Math.abs(obj.vy) * restitution;
                 obj.y = canvasHeight - obj.height;
+                obj.isBounded = true;
             }
         }
 
@@ -127,6 +128,8 @@ export class CollisionEngine
     {
         data.obj1.isColliding = true;
         data.obj2.isColliding = true;
+        data.obj1.isBounded = true;
+        data.obj2.isBounded = true;
 
         const vCollisionNorm = data.vCollision.y / data.distance;
         const vRelativeVelocity = data.obj1.vy - data.obj2.vy;
@@ -162,8 +165,14 @@ export class CollisionEngine
             }
         }
 
-        console.log("speed", speed);
-
+        if (data.dir === "vertex")
+        {
+            data.obj2.vx *= -1;
+            data.obj1.vx *= -1;
+            data.obj2.vy *= -1;
+            data.obj1.vy *= -1;
+        }
+        // console.log("speed", speed);
         if (speed < 0)
         {
             return true;
@@ -172,5 +181,6 @@ export class CollisionEngine
         // const impulse = (2 * speed) / (data.obj1.mass + data.obj2.mass);
         // data.obj1.vy -= impulse * data.obj2.mass * vCollisionNorm;
         // data.obj2.vy += impulse * data.obj1.mass * vCollisionNorm;
+        //
     }
 }

@@ -56,7 +56,11 @@ export class Circle extends GameObject
         {
             const g = 0.0981;
             // Apply acceleration
-            this.vy += g;
+            this.vy += g * 4;
+            if (this.vy > 10)
+            {
+                this.vy = 10;
+            }
 
             // Move with set velocity
             this.x += this.vx;

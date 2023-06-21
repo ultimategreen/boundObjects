@@ -100,14 +100,19 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
     }
 
     // vertex
-    if (data.slopeThreshold.horizontal < data.vCollisionSlope && data.vCollisionSlope < data.slopeThreshold.vertical && data.distance < circle.r)
+    if (data.slopeThreshold.horizontal > data.vCollisionSlope && data.vCollisionSlope > data.slopeThreshold.vertical)
     {
-        data.dir = "vertex";
-        return true;
+        if (data.distance < circle.r)
+        {
+            data.dir = "vertex";
+            console.log(data.dir);
+            return true;
+        }
+        return false;
     }
 
     //horizontal side
-    if (data.slopeThreshold.horizontal >= data.vCollisionSlope && data.vCollision.y < squre.height + circle.r)
+    if (data.slopeThreshold.horizontal >= data.vCollisionSlope && data.vCollision.x < squre.width / 2 + circle.r)
     {
         if (squre.fixed === false && squre.x < circle.x && circle.x < squre.x + squre.width)
         {
@@ -115,7 +120,7 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
         }
         if (circle.fixed === false)
         {
-            if (circle.x < squre.x + squre.width && squre.x < circle.x + circle.r)
+            if (circle.x <= squre.x + squre.width && squre.x + squre.width < circle.x + circle.r)
             // right side
             {
                 circle.x = squre.x + squre.width + circle.r;
@@ -127,11 +132,12 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
             }
         }
         data.dir = "horizontal";
+        console.log(data.dir);
         return true;
     }
 
     // vertical side
-    if (data.vCollisionSlope >= data.slopeThreshold.vertical && data.vCollision.x < squre.width + circle.r)
+    if (data.vCollisionSlope >= data.slopeThreshold.vertical && data.vCollision.y < squre.height / 2 + circle.r)
     {
         if (squre.fixed === false && squre.y < circle.y && circle.y < squre.y + squre.height)
         {
@@ -142,6 +148,7 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
             circle.y = squre.y - circle.r;
         }
         data.dir = "vertical";
+        console.log(data.dir);
         return true;
     }
 

@@ -11,6 +11,7 @@ export abstract class GameObject
     height: number;
     restitution: number;
     isColliding: boolean;
+    isBounded: boolean;
 
     constructor(context: CanvasRenderingContext2D, x:number , y:number , vx:number , vy:number , mass:number, fixed:boolean, restitution: number, width: number, height: number )
     {
@@ -23,6 +24,7 @@ export abstract class GameObject
         this.restitution = restitution;
         this.fixed = fixed;
         this.isColliding = false;
+        this.isBounded = false;
 
         if (fixed === true) 
         {
