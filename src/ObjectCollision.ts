@@ -126,12 +126,14 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
             // right side
             {
                 circle.x = squre.x + squre.width + circle.r;
+                circle.vx = -Math.abs(circle.vx);
             }
 
             else if (circle.x <= leftSide && leftSide < circle.x + circle.r)
             // left side
             {
                 circle.x = squre.x - circle.r;
+                circle.vx = Math.abs(circle.vx);
             }
         }
         data.dir = "horizontal";
