@@ -48,6 +48,12 @@ export class Circle extends GameObject
         this.context.beginPath();
         this.context.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
         this.context.fill();
+
+        this.context.beginPath();
+        this.context.strokeStyle = "green";
+        this.context.moveTo(this.x, this.y);
+        this.context.lineTo(this.x + this.vx * 100, this.y + this.vy * 100);
+        this.context.stroke();
     }
 
     update()

@@ -30,10 +30,11 @@ export class GameWorld
         this.oldTimeStamp = 0;
 
         this.gameObjects = [
-            new Circle(this.context, 599, 400, 15, 20, false, 1, 3),
+            new Circle(this.context, 599, 200, 15, 20, false, 1, 0),
             new Square(this.context, 301, 400, 200, 50, 10, true),
-            new Square(this.context, 600, 600, 50, 300, 10, true),
+            new Square(this.context, 600, 800, 50, 200, 10, true),
 
+            new Square(this.context, 300, 600, 50, 500, 10, true),
             new Square(this.context, 0, 100, 300, 10, 10, true),
         ];
         this.gameObjects.forEach((obj) => obj.update());
@@ -48,25 +49,6 @@ export class GameWorld
             const act = {
                 ArrowRight: () => { this.gameObjects[0].vx = 10; },
                 ArrowLeft: () => { this.gameObjects[0].vx = -10; },
-            };
-
-            switch (e.key)
-            {
-            case "ArrowRight":
-                act[e.key]();
-                break;
-            case "ArrowLeft":
-                act[e.key]();
-                break;
-            }
-
-
-        });
-        document.addEventListener("keyup", (e) => {
-            console.log("key up", e.key);
-            const act = {
-                ArrowRight: () => { this.gameObjects[0].vx -= 10; },
-                ArrowLeft: () => { this.gameObjects[0].vx += 10; },
                 space: () =>
                 {
                     if (this.gameObjects[0].isBounded)
@@ -87,6 +69,25 @@ export class GameWorld
                 break;
             case " ":
                 act["space"]();
+                break;
+            }
+
+
+        });
+        document.addEventListener("keyup", (e) => {
+            console.log("key up", e.key);
+            const act = {
+                ArrowRight: () => { this.gameObjects[0].vx -= 10; },
+                ArrowLeft: () => { this.gameObjects[0].vx += 10; },
+            };
+
+            switch (e.key)
+            {
+            case "ArrowRight":
+                act[e.key]();
+                break;
+            case "ArrowLeft":
+                act[e.key]();
                 break;
             }
 

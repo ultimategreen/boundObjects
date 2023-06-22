@@ -112,7 +112,7 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
     }
 
     //horizontal side
-    if (data.slopeThreshold.horizontal >= data.vCollisionSlope && data.vCollision.x < squre.width / 2 + circle.r)
+    if (data.slopeThreshold.horizontal >= data.vCollisionSlope && data.vCollision.x < squre.width + circle.r)
     {
         if (squre.fixed === false && squre.x < circle.x && circle.x < squre.x + squre.width)
         {
@@ -120,12 +120,15 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
         }
         if (circle.fixed === false)
         {
-            if (circle.x <= squre.x + squre.width && squre.x + squre.width < circle.x + circle.r)
+            const rightSide = squre.x + squre.width;
+            const leftSide = squre.x;
+            if (circle.x - circle.r <= rightSide && rightSide < circle.x )
             // right side
             {
                 circle.x = squre.x + squre.width + circle.r;
             }
-            else if (circle.x < squre.x && squre.x < circle.x + circle.r)
+
+            else if (circle.x <= leftSide && leftSide < circle.x + circle.r)
             // left side
             {
                 circle.x = squre.x - circle.r;
@@ -137,7 +140,7 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
     }
 
     // vertical side
-    if (data.vCollisionSlope >= data.slopeThreshold.vertical && data.vCollision.y < squre.height / 2 + circle.r)
+    if (data.vCollisionSlope >= data.slopeThreshold.vertical && data.vCollision.y < squre.height + circle.r)
     {
         if (squre.fixed === false && squre.y < circle.y && circle.y < squre.y + squre.height)
         {

@@ -181,6 +181,5 @@ export class CollisionEngine
         // const impulse = (2 * speed) / (data.obj1.mass + data.obj2.mass);
         // data.obj1.vy -= impulse * data.obj2.mass * vCollisionNorm;
         // data.obj2.vy += impulse * data.obj1.mass * vCollisionNorm;
-        //
     }
 }
