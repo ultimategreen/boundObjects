@@ -52,7 +52,7 @@ export class Circle extends GameObject
         this.context.beginPath();
         this.context.strokeStyle = "green";
         this.context.moveTo(this.x, this.y);
-        this.context.lineTo(this.x + this.vx * 100, this.y + this.vy * 100);
+        this.context.lineTo(this.x + this.vx * 10, this.y + this.vy * 10);
         this.context.stroke();
     }
 

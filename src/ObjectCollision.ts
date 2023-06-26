@@ -148,9 +148,19 @@ export function intersects(circle: Circle, squre: Square, data:CollisionObjects)
         {
             squre.y = circle.y - circle.r - squre.height;
         }
-        if (circle.fixed === false && circle.y < squre.y && squre.y < circle.y + circle.r)
+
+        if (circle.fixed === false)
         {
-            circle.y = squre.y - circle.r;
+            if (circle.y < squre.y && squre.y < circle.y + circle.r)
+            {
+                circle.y = squre.y - circle.r;
+                circle.vy = Math.abs(circle.vy);
+            }
+            else if (circle.y - circle.r < squre.y + squre.height  && squre.y + squre.height < circle.y)
+            {
+                circle.y = squre.y + squre.height + circle.r;
+                circle.vy = -Math.abs(circle.vy);
+            }
         }
         data.dir = "vertical";
         console.log(data.dir);
